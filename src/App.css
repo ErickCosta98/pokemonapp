@@ -1,5 +1,5 @@
 
-.App-logo {
+/* .App-logo {
   height: 10vmin;
   pointer-events: none;
 }
@@ -8,12 +8,12 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
-}
+} */
 .App{
   width: 100%;
 }
 .App-header {
-  background-color: rgb(226, 226, 226);
+  background-color: rgb(255, 255, 255);
   min-height: 100vh; 
   font-size: calc(10px + 2vmin);
 }
@@ -30,7 +30,7 @@
     transform: rotate(360deg);
   }
 }
-.cards{
+.micards{
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
@@ -41,8 +41,8 @@
 
 }
 /* estilos para la card de pokemon */
-.card {
-  background-color: rgb(211, 211, 211);
+.micard {
+  background-color: rgb(236, 236, 236);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   width: 400px;
   margin: 15px;
@@ -54,8 +54,60 @@
 
 }
 
-.card-img-top{
+.micard-img-top{
   margin: 10px;
   background-color: #ffffff;
   border-radius: 60%;
+}
+
+.container-logo{
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.App-logo{
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.minav{
+  display: flex;
+  justify-content: space-around;
+  width: 100%;}
+
+.minav-bar{
+  /* fijar barra de navegacion en la parte superior */
+  position: fixed;
+  /* redondeo de la barra de navegacion */
+  border-radius: 30px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  background-color: rgb(239,83,80);
+  height: 10vh;
+  width: 90%;
+  font-size: calc(10px + 2vmin);
+  color: #000000;
+  /* sombra  para la barra de navegacion*/
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  /* fuente tipo pokemon para los textos */
+  z-index: 1;
+  
+}
+.nav-bar-right{
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.logo{
+  width: 150px;
+  margin-left: 10px;
+}
+select{
+  appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
 }
