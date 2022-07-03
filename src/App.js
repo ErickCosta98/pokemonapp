@@ -5,40 +5,22 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import $ from 'jquery';
 import 'popper.js';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-
+import Swal from 'sweetalert2';
 //funcion para mostrar los pokemon en las tarjetas de la pagina principal desde la pokeapi
 function getPokemon() {
-  const url = 'https://pokeapi.co/api/v2/pokemon?limit=250&offset=0'; //offset=20&limit=20
+  const url ='https://pokeapi.co/api/v2/pokemon?limit=250&offset=0'; //offset=20&limit=20
   fetch(url)
     .then(response => response.json())
     .then(data => {
       const pokemons = data.results;
+      //limpiar la lista de pokemon
+      document.getElementById('pokemon').innerHTML = '';
       pokemons.forEach(pokemon => {
         const card = getCard(pokemon);
         document.getElementById('pokemon').appendChild(card);
       });
     }).catch(error => console.log(error));
 }
-// funcion para mostrar los detalles de los pokemon extendiendo el card de la pagina principal
-// function getPokemonDetail(e,url) {
-//   fetch(url)
-//     .then(response => response.json())
-//     .then(data => {
-//       const pokemon = data;
-//       const card = document.createElement('div');
-//       card.classList.add('card-more-details');
-//       const type = document.createElement('p');
-//       type.innerHTML = pokemon.types.map(type => type.type.name).join(', ');
-//       const height = document.createElement('p');
-//       height.innerHTML = `Height: ${pokemon.height}`;
-//       const weight = document.createElement('p');
-//       weight.innerHTML = `Weight: ${pokemon.weight}`;
-//       card.appendChild(type);
-//       card.appendChild(height);
-//       card.appendChild(weight);
-//       e.target.appendChild(card);
-//     }).catch(error => console.log(error));
-// }
 
 //funcion mostrar lista de generaciones de pokemon
 function getGenerations() {
@@ -137,6 +119,56 @@ function getOption(pokemon){
   option.href = pokemon.url;
   return option;
 }
+//funcion para abrir el buscardor de pokemons con sweetalert2
+function openSearch() {
+  Swal.fire({
+    title: 'Ingrese el nombre del pokemon',
+    input: 'text',
+    inputAttributes: {
+      id: 'search',
+      autocapitalize: 'off'
+    },
+    showCancelButton: true,
+    confirmButtonText: 'Buscar',
+    showLoaderOnConfirm: true,
+    preConfirm: (search) => {
+      getPokemonByName(search);
+    }
+  })
+}
+//funcion para buscar pokemon por nombre, mostrar todos sus detalles y mostrarlo en la pagina principal
+function getPokemonByName(pokemon) {
+  const url = `https://pokeapi.co/api/v2/pokemon/${pokemon}`;
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      // limpiar la lista de pokemon
+      document.getElementById('pokemon').innerHTML = '';
+      const card = document.createElement('div');
+      card.classList.add('micardPlus');
+      const cardDetails = document.createElement('div');
+      cardDetails.classList.add('card-details');
+      const img = document.createElement('img');
+      img.className = 'micard-img-top';
+      img.src = data.sprites.front_default;
+      const name = document.createElement('h2');
+      name.innerHTML = data.name;
+      const type = document.createElement('p');
+      type.innerHTML = data.types.map(type => type.type.name).join(', ');
+      const height = document.createElement('p');
+      height.innerHTML = `Height: ${data.height}`;
+      const weight = document.createElement('p');
+      weight.innerHTML = `Weight: ${data.weight}`;
+      cardDetails.appendChild(img);
+      cardDetails.appendChild(name);
+      cardDetails.appendChild(type);
+      cardDetails.appendChild(height);
+      cardDetails.appendChild(weight); 
+      card.appendChild(cardDetails);
+      document.getElementById('pokemon').appendChild(card);
+    }).catch(error => console.log(error));
+}
+
 
 
 getPokemon();
@@ -147,33 +179,26 @@ function App() {
       <div className="App-header" >
         <div className="minav">
           <div className="minav-bar">
-          <nav className="navbar navbar-expand-lg ">
-            <div className="container-fluid">
-              <a className="navbar-brand" href="/"> <img src={logo} className='logo' alt='logo'/></a>
-              <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"></span>
-              </button>
-              <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
-                <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                  
-                 
-                  <li className="nav-item dropdown">
-                    <a className="nav-link dropdown-toggle text-white" href="/#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Generaciones
-                    </a>
-                    <ul className="dropdown-menu" id='generations' aria-labelledby="navbarScrollingDropdown">                      
-                    </ul>
-                  </li>
-                  <li className="nav-item dropdown">
-                    <a className="nav-link dropdown-toggle text-white" href="/#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Tipos de pokemon
-                    </a>
-                    <ul className="dropdown-menu" id='types' aria-labelledby="navbarScrollingDropdown">                      
-                    </ul>
-                  </li>
-                </ul>
-              </div>
+          <nav className='nav-items'>
+            <a href="/"> <img src={logo} className='logo' alt='logo' /></a>
+            <div>
+            <a className="dropdown dropdown-toggle link-nav" href="/#" id="DropGenerations" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Generaciones
+            </a>
+            <ul className="dropdown-menu" id='generations' aria-labelledby="DropGenerations">
+            </ul>
             </div>
+            <div>
+              <a className="dropdown dropdown-toggle link-nav" href="/#" id="DropTypes" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Tipos
+              </a>
+              <ul className="dropdown-menu" id='types' aria-labelledby="DropTypes">
+              </ul>
+            </div>
+            <div className='searchDiv'>
+              <a className='text-left btnsearch' onClick={openSearch} href='/#' ><i className='fa fa-search'></i> <label>BUSCAR</label></a>
+            </div>
+
           </nav>
         </div>
         </div>
@@ -185,7 +210,6 @@ function App() {
         <div className="micards" id='pokemon'>
         </div>
 
-        
       </div>
       
   );
