@@ -1,4 +1,3 @@
-// import logo from './logo.svg';
 import './App.css';
 import logo from  './pokelogo.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -16,8 +15,12 @@ function getPokemon() {
       //limpiar la lista de pokemon
       document.getElementById('pokemon').innerHTML = '';
       pokemons.forEach(pokemon => {
-        const card = getCard(pokemon);
-        document.getElementById('pokemon').appendChild(card);
+        fetch(pokemon.url)
+          .then(response => response.json())
+          .then(data => {
+            const card = getCard(data);
+            document.getElementById('pokemon').appendChild(card);
+          }).catch(error => console.log(error));
       });
     }).catch(error => console.log(error));
 }
@@ -50,12 +53,17 @@ function getPokemonByGeneration (e) {
     .then(data => {
       const pokemons = data.pokemon_species;
       //limpiar la lista de pokemon
+      console.log(pokemons)
       document.getElementById('pokemon').innerHTML = '';
       pokemons.forEach(pokemon => {
-        const card = getCard(pokemon);
-        document.getElementById('pokemon').appendChild(card);
+        fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
+          .then(response => response.json())
+          .then(data => {
+            const card = getCard(data);
+            document.getElementById('pokemon').appendChild(card);
+          }).catch(error => console.log(error));
       });
-    }).catch(error => console.log(error));
+      });
 }
 
 //funcion para generar card
@@ -66,14 +74,31 @@ function getCard(pokemon) {
   cardDetails.classList.add('card-details');
   const img = document.createElement('img');
   img.className = 'micard-img-top';
-  img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.url.split('/')[6]}.png`;
+  img.src = pokemon.sprites.front_default;
   const name = document.createElement('h2');
-  name.innerHTML = pokemon.name;
+  name.innerHTML = `${pokemon.name}  #${pokemon.id}`;
   cardDetails.appendChild(img);
   cardDetails.appendChild(name);
-  // card.addEventListener('click', (e) => {
-  //   getPokemonDetail(e,pokemon.url);
-  // });
+  // agrgar estadisticas al card
+  const stats = document.createElement('div');
+  stats.classList.add('stats', 'm-5');
+  pokemon.stats.forEach(stat => {
+    const bar = document.createElement('div');
+    bar.classList.add('progress','mb-2');
+    const p = document.createElement('div');
+    p.classList.add('progress-bar','bg-success','bg-opacity-25');
+    var porcentaje = (stat.base_stat / 255) * 255;
+    var porcentajeRestante = 255 - porcentaje;
+    p.style.width = `${porcentajeRestante}%`;
+    const st = document.createElement('div');
+    st.classList.add('progress-bar','bg-success');
+    st.style.width = `${porcentaje}%`;
+    st.innerHTML = `${stat.stat.name} ${stat.base_stat}`;
+    bar.appendChild(st);
+    bar.appendChild(p);
+    stats.appendChild(bar);
+  });
+  cardDetails.appendChild(stats);
   card.appendChild(cardDetails);
   return card;
 }
@@ -106,8 +131,12 @@ function getPokemonByType (e) {
       //limpiar la lista de pokemon
       document.getElementById('pokemon').innerHTML = '';
       pokemons.forEach(pokemon => {
-        const card = getCard(pokemon.pokemon);
-        document.getElementById('pokemon').appendChild(card);
+        fetch(pokemon.pokemon.url)
+          .then(response => response.json())
+          .then(data => {
+            const card = getCard(data);
+            document.getElementById('pokemon').appendChild(card);
+          }).catch(error => console.log(error));
       });
     }).catch(error => console.log(error));
 }
@@ -133,7 +162,8 @@ function openSearch() {
     showLoaderOnConfirm: true,
     preConfirm: (search) => {
       getPokemonByName(search);
-    }
+    },
+    
   })
 }
 //funcion para buscar pokemon por nombre, mostrar todos sus detalles y mostrarlo en la pagina principal
@@ -144,29 +174,13 @@ function getPokemonByName(pokemon) {
     .then(data => {
       // limpiar la lista de pokemon
       document.getElementById('pokemon').innerHTML = '';
-      const card = document.createElement('div');
-      card.classList.add('micardPlus');
-      const cardDetails = document.createElement('div');
-      cardDetails.classList.add('card-details');
-      const img = document.createElement('img');
-      img.className = 'micard-img-top';
-      img.src = data.sprites.front_default;
-      const name = document.createElement('h2');
-      name.innerHTML = data.name;
-      const type = document.createElement('p');
-      type.innerHTML = data.types.map(type => type.type.name).join(', ');
-      const height = document.createElement('p');
-      height.innerHTML = `Height: ${data.height}`;
-      const weight = document.createElement('p');
-      weight.innerHTML = `Weight: ${data.weight}`;
-      cardDetails.appendChild(img);
-      cardDetails.appendChild(name);
-      cardDetails.appendChild(type);
-      cardDetails.appendChild(height);
-      cardDetails.appendChild(weight); 
-      card.appendChild(cardDetails);
+      const card = getCard(data);
       document.getElementById('pokemon').appendChild(card);
-    }).catch(error => console.log(error));
+    }).catch(error => Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'El pokemon no existe!',
+      }));
 }
 
 

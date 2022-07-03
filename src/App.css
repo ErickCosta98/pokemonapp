@@ -124,6 +124,9 @@ select{
   align-items: center;
   width: 100%;
 }
+.bgbar{
+  background-color: #dadada;
+}
 
 .link-nav{
   color: #000000;
