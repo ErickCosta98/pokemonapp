@@ -7,7 +7,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 import Swal from 'sweetalert2';
 //funcion para mostrar los pokemon en las tarjetas de la pagina principal desde la pokeapi
 function getPokemon() {
-  const url ='https://pokeapi.co/api/v2/pokemon?limit=250&offset=0'; //offset=20&limit=20
+  const url ='https://pokeapi.co/api/v2/pokemon?limit=25&offset=0'; //offset=20&limit=20
   fetch(url)
     .then(response => response.json())
     .then(data => {
