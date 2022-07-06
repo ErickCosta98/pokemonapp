@@ -210,7 +210,7 @@ function App() {
               </ul>
             </div>
             <div className='searchDiv'>
-              <a className='text-left btnsearch' onClick={openSearch} href='/#' ><i className='fa fa-search'></i> <label>BUSCAR</label></a>
+              <a className='text-left btnsearch' onClick={openSearch} href='/#' ><i className='fa fa-search'></i></a>
             </div>
 
           </nav>
